@@ -1,4 +1,12 @@
 <html>
-    <h1> This is my dashboard. </h1>
-    <a href="{% url 'logout' %}"> Logout here </a>
+    <h1>Este es mi dashboard.</h1>
+    <p>Bienvenido, {{ user.username }}.</p>
+
+    {% if user.is_authenticated and user.tipo_de_usuario == 'administrador' %}
+        <a href="{% url 'register' %}">Registrar nuevo usuario</a>
+    {% endif %}
+
+    <a href="{% url 'logout' %}">Cerrar sesión</a>
+    <br> <br>
+    <a href="{% url 'change_password' %}"> Change password </a>
 </html>
