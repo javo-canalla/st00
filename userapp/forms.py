@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
 from django import forms
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 # from django.forms.widgets import PasswordInput, TextInput
 
 CustomUser = get_user_model()
@@ -40,3 +40,12 @@ class CustomPasswordResetForm(PasswordResetForm):
             raise forms.ValidationError(
                 "No existe ninguna cuenta registrada con este correo electrónico.")
         return email
+
+
+class CustomUserChangeForm(UserChangeForm):
+    password = None  # Opcional: Ocultamos el campo de contraseña en este formulario
+
+    class Meta:
+        model = CustomUser
+        fields = ('username', 'direccion_email', 'nombre', 'apellido',
+                  'numero_telefono_particular', 'numero_de_interno', 'tipo_de_usuario')

@@ -1,8 +1,7 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from .forms import LoginForm, CustomUserCreationForm, CustomPasswordResetForm
+from django.shortcuts import render, redirect, get_object_or_404
+from .forms import LoginForm, CustomUserCreationForm, CustomPasswordResetForm, CustomUserChangeForm
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout, update_session_auth_hash
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout, update_session_auth_hash, get_user_model
 from django.contrib.auth.forms import PasswordChangeForm
 from .decorators import admin_required
 from django.contrib import messages
@@ -12,6 +11,8 @@ from django.contrib.auth import views as auth_views
 # from django.contrib.auth.models import auth
 
 # Create your views here.
+
+CustomUser = get_user_model()
 
 
 def homepage(request):
@@ -100,6 +101,27 @@ class PasswordResetConfirmView(auth_views.PasswordResetConfirmView):
 
 class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
     template_name = 'userapp/password_reset_complete.html'
+
+
+@admin_required(login_url='login')
+def user_list(request):
+    users = CustomUser.objects.all()
+    context = {'users': users}
+    return render(request, 'userapp/user_list.html', context)
+
+
+@admin_required(login_url='login')
+def user_edit(request, user_id):
+    user = get_object_or_404(CustomUser, id=user_id)
+    if request.method == 'POST':
+        form = CustomUserChangeForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('user_list')
+    else:
+        form = CustomUserChangeForm(instance=user)
+    context = {'form': form, 'user': user}
+    return render(request, 'userapp/user_edit.html', context)
 
 # def new_job(request):
 #     return HttpResponse("new job")

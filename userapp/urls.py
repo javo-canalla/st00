@@ -1,6 +1,6 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from .views import login, logout, change_password, dashboard, homepage, register, access_denied
+from .views import login, logout, change_password, dashboard, homepage, register, access_denied, user_list, user_edit
 from .forms import CustomPasswordResetForm
 urlpatterns = [
     path('', homepage, name="homepage"),
@@ -25,4 +25,6 @@ urlpatterns = [
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(
         template_name='userapp/password_reset_complete.html',
     ), name='password_reset_complete'),
+    path('users/', user_list, name="user_list"),
+    path('users/edit/<int:user_id>/', user_edit, name='user_edit'),
 ]

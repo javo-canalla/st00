@@ -4,6 +4,7 @@
 
     {% if user.is_authenticated and user.tipo_de_usuario == 'administrador' %}
         <a href="{% url 'register' %}">Registrar nuevo usuario</a>
+        <a href="{% url 'user_list' %}">Gestionar usuarios</a>
     {% endif %}
 
     <a href="{% url 'logout' %}">Cerrar sesión</a>
