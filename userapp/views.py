@@ -1,11 +1,14 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import LoginForm, CustomUserCreationForm
+from .forms import LoginForm, CustomUserCreationForm, CustomPasswordResetForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout, update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from .decorators import admin_required
 from django.contrib import messages
+from django.urls import reverse_lazy
+
+from django.contrib.auth import views as auth_views
 # from django.contrib.auth.models import auth
 
 # Create your views here.
@@ -65,10 +68,6 @@ def change_password(request):
     return render(request, 'userapp/change_password.html', context)
 
 
-def forgot_password(request):
-    return HttpResponse("forgot password")
-
-
 def logout(request):
     auth_logout(request)
     return redirect("homepage")
@@ -76,6 +75,31 @@ def logout(request):
 
 def access_denied(request):
     return render(request, 'userapp/access_denied.html')
+
+
+class PasswordResetView(auth_views.PasswordResetView):
+    template_name = 'userapp/password_reset_form.html'
+    email_template_name = 'userapp/password_reset_email.html'
+    success_url = reverse_lazy('password_reset_done')
+    form_class = CustomPasswordResetForm
+    subject_template_name = 'userapp/password_reset_subject.txt'
+    extra_email_context = {
+        'protocol': 'http',
+        'domain': 'localhost:8000',
+    }
+
+
+class PasswordResetDoneView(auth_views.PasswordResetDoneView):
+    template_name = 'userapp/password_reset_done.html'
+
+
+class PasswordResetConfirmView(auth_views.PasswordResetConfirmView):
+    template_name = 'userapp/password_reset_confirm.html'
+    success_url = reverse_lazy('password_reset_complete')
+
+
+class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
+    template_name = 'userapp/password_reset_complete.html'
 
 # def new_job(request):
 #     return HttpResponse("new job")

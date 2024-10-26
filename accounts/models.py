@@ -2,11 +2,14 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 # Create your models here.
+
+
 class TipoUsuario(models.TextChoices):
     ADMINISTRADOR = 'administrador', 'Administrador'
     COMUN = 'comun', 'Común'
     OPERARIO = 'operario', 'Operario'
     SUPERVISOR = 'supervisor', 'Supervisor'
+
 
 class CustomUser(AbstractUser):
     nombre = models.CharField(max_length=30)
@@ -21,6 +24,7 @@ class CustomUser(AbstractUser):
     )
 
     USERNAME_FIELD = 'username'
+    EMAIL_FIELD = 'direccion_email'
     REQUIRED_FIELDS = ['direccion_email', 'nombre', 'apellido']
 
     def __str__(self):
