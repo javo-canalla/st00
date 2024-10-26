@@ -28,3 +28,15 @@ class CustomPasswordResetForm(PasswordResetForm):
             'is_active': True,
         }
         return UserModel._default_manager.filter(**kwargs)
+
+
+class CustomPasswordResetForm(PasswordResetForm):
+    email = forms.EmailField(label="Correo electrónico", max_length=254)
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        UserModel = get_user_model()
+        if not UserModel.objects.filter(direccion_email__iexact=email, is_active=True).exists():
+            raise forms.ValidationError(
+                "No existe ninguna cuenta registrada con este correo electrónico.")
+        return email
