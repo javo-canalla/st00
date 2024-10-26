@@ -123,6 +123,17 @@ def user_edit(request, user_id):
     context = {'form': form, 'user': user}
     return render(request, 'userapp/user_edit.html', context)
 
+
+@admin_required(login_url='login')
+def user_delete(request, user_id):
+    user = get_object_or_404(CustomUser, id=user_id)
+    if request.method == 'POST':
+        user.delete()
+        return redirect('user_list')
+    context = {'user': user}
+    return render(request, 'userapp/user_delete.html', context)
+
+
 # def new_job(request):
 #     return HttpResponse("new job")
 
